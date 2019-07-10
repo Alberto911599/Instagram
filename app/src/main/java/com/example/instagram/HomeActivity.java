@@ -16,15 +16,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.File;
-import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -101,25 +98,6 @@ public class HomeActivity extends AppCompatActivity {
                 Toast.makeText(HomeActivity.this, "Success!!", Toast.LENGTH_LONG).show();
                 etDescription.setText("");
                 ivPreview.setImageResource(0);
-            }
-        });
-    }
-
-    private void queryPosts() {
-        ParseQuery<Post> query = new ParseQuery<Post>(Post.class);
-        query.include(Post.KEY_USER);
-        query.findInBackground(new FindCallback<Post>() {
-            @Override
-            public void done(List<Post> posts, ParseException e) {
-                if(e != null){
-                    Log.e(APP_TAG, "Error with query");
-                    e.printStackTrace();
-                    return;
-                }
-                for(int i = 0; i < posts.size(); i++){
-                    Post post = posts.get(i);
-                    Log.d(APP_TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
-                }
             }
         });
     }
