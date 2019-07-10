@@ -10,26 +10,118 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.File;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
     public final String APP_TAG = "MyCustomApp";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public String photoFileName = "photo.jpg";
-    File photoFile;
+    private File photoFile;
+    private Button btnPost;
+    private Button btnCamera;
+    private Button btnLogOut;
+    private EditText etDescription;
+    private ImageView ivPreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        btnPost = findViewById(R.id.btnPost);
+        btnCamera = findViewById(R.id.btnCamera);
+        etDescription = findViewById(R.id.description_et);
+        ivPreview =  findViewById(R.id.ivPreview);
+        btnLogOut = findViewById(R.id.btnLogout);
 
-        onLaunchCamera();
+
+        btnPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String description = etDescription.getText().toString();
+                ParseUser user = ParseUser.getCurrentUser();
+                if(photoFile == null || ivPreview.getDrawable() == null){
+                    Log.d(APP_TAG, "No photo submit");
+                    Toast.makeText(HomeActivity.this, "There is no photo", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                savePost(description, user, photoFile);
+            }
+        });
+
+        btnCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onLaunchCamera();
+            }
+        });
+
+        btnLogOut.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                ParseUser.logOut();
+                ParseUser currentUser = ParseUser.getCurrentUser();
+                Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+//        queryPosts();
+    }
+
+    private void savePost(String description, ParseUser user, File image){
+        Post post = new Post();
+        post.setDescription(description);
+        post.setUser(user);
+        post.setImage(new ParseFile(image));
+
+        post.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e != null){
+                    Log.d(APP_TAG, "Error while saving");
+                    e.printStackTrace();
+                    return;
+                }
+                Log.d(APP_TAG, "Success!!");
+                Toast.makeText(HomeActivity.this, "Success!!", Toast.LENGTH_LONG).show();
+                etDescription.setText("");
+                ivPreview.setImageResource(0);
+            }
+        });
+    }
+
+    private void queryPosts() {
+        ParseQuery<Post> query = new ParseQuery<Post>(Post.class);
+        query.include(Post.KEY_USER);
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> posts, ParseException e) {
+                if(e != null){
+                    Log.e(APP_TAG, "Error with query");
+                    e.printStackTrace();
+                    return;
+                }
+                for(int i = 0; i < posts.size(); i++){
+                    Post post = posts.get(i);
+                    Log.d(APP_TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
+                }
+            }
+        });
     }
 
     public void onLaunchCamera() {
@@ -79,7 +171,6 @@ public class HomeActivity extends AppCompatActivity {
                 Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                 // RESIZE BITMAP, see section below
                 // Load the taken image into a preview
-                ImageView ivPreview = (ImageView) findViewById(R.id.ivPreview);
                 ivPreview.setImageBitmap(takenImage);
             } else { // Result was a failure
                 Toast.makeText(this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
