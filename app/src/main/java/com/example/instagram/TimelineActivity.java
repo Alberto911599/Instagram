@@ -1,6 +1,7 @@
 package com.example.instagram;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,8 @@ public class TimelineActivity extends AppCompatActivity {
     private ArrayList<Post> arrPosts;
     private RecyclerView rvTimeline;
     private PostAdapter postAdapter;
+    private SwipeRefreshLayout swipeContainer;
+
 
 
     @Override
@@ -43,14 +46,32 @@ public class TimelineActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
 
-
         ImageView myImage =  findViewById(R.id.ivToolbarLogo);
         Glide.with(this)
                 .load("https://1.bp.blogspot.com/-5cSNkUlM6Ns/WEfffCkKw7I/AAAAAAAABMo/odiYMhl33M8nav4HjLnSQB1DeIjQgcdJQCLcB/s1600/instagram-1594387_960_720.png")
                 .into(myImage);
 
 
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                queryPosts();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,12 +91,16 @@ public class TimelineActivity extends AppCompatActivity {
                     e.printStackTrace();
                     return;
                 }
+                postAdapter.clear();;
                 for(int i = 0; i < MAX_SIZE && i < posts.size(); i++){
                     arrPosts.add(posts.get(i));
                     postAdapter.notifyItemInserted(arrPosts.size()-1);
 //                    Log.d(TIMELINE_TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
                 }
+                swipeContainer.setRefreshing(false);
+                rvTimeline.scrollToPosition(0);
             }
         });
     }
+
 }

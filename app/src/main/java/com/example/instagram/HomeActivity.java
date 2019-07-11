@@ -22,6 +22,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.File;
+import java.util.Date;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -85,6 +86,7 @@ public class HomeActivity extends AppCompatActivity {
         post.setDescription(description);
         post.setUser(user);
         post.setImage(new ParseFile(image));
+        post.setTime(new Date());
 
         post.saveInBackground(new SaveCallback() {
             @Override
