@@ -5,13 +5,13 @@
     <item
         android:id="@+id/action_more"
         android:icon="@drawable/ic_more"
-        android:title="@string/action_camera"
+        android:title="More"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_direct"
         android:icon="@drawable/ic_direct"
-        android:title="@string/action_camera"
+        android:title="Direct"
         app:showAsAction="ifRoom"/>
 
 </menu>

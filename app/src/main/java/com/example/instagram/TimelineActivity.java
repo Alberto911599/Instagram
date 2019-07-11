@@ -2,6 +2,8 @@ package com.example.instagram;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,9 +11,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.parse.FindCallback;
@@ -30,6 +34,7 @@ public class TimelineActivity extends AppCompatActivity {
     private PostAdapter postAdapter;
     private SwipeRefreshLayout swipeContainer;
     private ImageButton btnCamera;
+    private BottomNavigationView bottomNavigationView;
 
 
     @Override
@@ -45,6 +50,7 @@ public class TimelineActivity extends AppCompatActivity {
         rvTimeline.setAdapter(postAdapter);
         rvTimeline.setLayoutManager(new LinearLayoutManager(this));
         btnCamera = findViewById(R.id.btnTakePic);
+        bottomNavigationView = findViewById(R.id.bottom_navigation_timeline);
 
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -82,6 +88,20 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.homeItem:
+                        rvTimeline.scrollToPosition(0);
+                        return true;
+                    default:
+                        Toast.makeText(TimelineActivity.this, "Click!!", Toast.LENGTH_LONG).show();
+                        return true;
+                }
+            }
+        });
+
     }
 
 
@@ -94,6 +114,7 @@ public class TimelineActivity extends AppCompatActivity {
 
     private void queryPosts() {
         ParseQuery<Post> query = new ParseQuery<Post>(Post.class);
+        query.orderByAscending("Born");
         query.include(Post.KEY_USER);
         query.findInBackground(new FindCallback<Post>() {
             @Override
