@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Glide.with(this)
-                .load("https://www.sccpre.cat/mypng/full/28-286927_fonty-instagram-logo-meat-instagram-letters-png-white.png")
+                .load("https://1.bp.blogspot.com/-5cSNkUlM6Ns/WEfffCkKw7I/AAAAAAAABMo/odiYMhl33M8nav4HjLnSQB1DeIjQgcdJQCLcB/s1600/instagram-1594387_960_720.png")
                 .into(ivLogo);
 
     }

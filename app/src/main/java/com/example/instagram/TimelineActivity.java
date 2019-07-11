@@ -1,5 +1,6 @@
 package com.example.instagram;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -26,7 +29,7 @@ public class TimelineActivity extends AppCompatActivity {
     private RecyclerView rvTimeline;
     private PostAdapter postAdapter;
     private SwipeRefreshLayout swipeContainer;
-
+    private ImageButton btnCamera;
 
 
     @Override
@@ -41,6 +44,7 @@ public class TimelineActivity extends AppCompatActivity {
         postAdapter = new PostAdapter(this, arrPosts);
         rvTimeline.setAdapter(postAdapter);
         rvTimeline.setLayoutManager(new LinearLayoutManager(this));
+        btnCamera = findViewById(R.id.btnTakePic);
 
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -53,7 +57,7 @@ public class TimelineActivity extends AppCompatActivity {
 
 
         // Lookup the swipe container view
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer =  findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -69,6 +73,14 @@ public class TimelineActivity extends AppCompatActivity {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
+        btnCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TimelineActivity.this, HomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 

@@ -31,7 +31,6 @@ public class HomeActivity extends AppCompatActivity {
     public String photoFileName = "photo.jpg";
     private File photoFile;
     private Button btnPost;
-    private Button btnCamera;
     private Button btnLogOut;
     private EditText etDescription;
     private ImageView ivPreview;
@@ -41,7 +40,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         btnPost = findViewById(R.id.btnPost);
-        btnCamera = findViewById(R.id.btnCamera);
         etDescription = findViewById(R.id.description_et);
         ivPreview =  findViewById(R.id.ivPreview);
         btnLogOut = findViewById(R.id.btnLogout);
@@ -61,12 +59,12 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        btnCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onLaunchCamera();
-            }
-        });
+//        btnCamera.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onLaunchCamera();
+//            }
+//        });
 
         btnLogOut.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -78,7 +76,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-//        queryPosts();
+        onLaunchCamera();
     }
 
     private void savePost(String description, ParseUser user, File image){
