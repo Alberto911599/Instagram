@@ -35,7 +35,6 @@ public class TimelineActivity extends AppCompatActivity {
     private PostAdapter postAdapter;
     private SwipeRefreshLayout swipeContainer;
     private ImageButton btnCamera;
-
     private BottomNavigationView bottomNavigationView;
 
 
@@ -53,6 +52,7 @@ public class TimelineActivity extends AppCompatActivity {
         rvTimeline.setLayoutManager(new LinearLayoutManager(this));
         btnCamera = findViewById(R.id.btnTakePic);
         bottomNavigationView = findViewById(R.id.bottom_navigation_timeline);
+
 
         Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
