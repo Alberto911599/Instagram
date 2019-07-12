@@ -25,6 +25,7 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
 
+//@RuntimePermissions
 public class TimelineActivity extends AppCompatActivity {
 
     private static final int MAX_SIZE = 20;
@@ -34,6 +35,7 @@ public class TimelineActivity extends AppCompatActivity {
     private PostAdapter postAdapter;
     private SwipeRefreshLayout swipeContainer;
     private ImageButton btnCamera;
+
     private BottomNavigationView bottomNavigationView;
 
 
@@ -84,6 +86,7 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TimelineActivity.this, HomeActivity.class);
+                intent.putExtra("camera/gallery", true);
                 startActivity(intent);
             }
         });
@@ -95,13 +98,17 @@ public class TimelineActivity extends AppCompatActivity {
                     case R.id.homeItem:
                         rvTimeline.scrollToPosition(0);
                         return true;
+                    case R.id.addItem:
+                        Intent intent = new Intent(TimelineActivity.this, HomeActivity.class);
+                        intent.putExtra("camera/gallery", false);
+                        startActivity(intent);
+                        return true;
                     default:
                         Toast.makeText(TimelineActivity.this, "Click!!", Toast.LENGTH_LONG).show();
                         return true;
                 }
             }
         });
-
     }
 
 
@@ -114,7 +121,7 @@ public class TimelineActivity extends AppCompatActivity {
 
     private void queryPosts() {
         ParseQuery<Post> query = new ParseQuery<Post>(Post.class);
-        query.orderByAscending("Born");
+        query.orderByDescending("Born");
         query.include(Post.KEY_USER);
         query.findInBackground(new FindCallback<Post>() {
             @Override
@@ -128,12 +135,10 @@ public class TimelineActivity extends AppCompatActivity {
                 for(int i = 0; i < MAX_SIZE && i < posts.size(); i++){
                     arrPosts.add(posts.get(i));
                     postAdapter.notifyItemInserted(arrPosts.size()-1);
-//                    Log.d(TIMELINE_TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
                 }
                 swipeContainer.setRefreshing(false);
                 rvTimeline.scrollToPosition(0);
             }
         });
     }
-
 }
